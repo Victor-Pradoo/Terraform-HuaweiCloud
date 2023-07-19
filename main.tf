@@ -26,7 +26,7 @@ resource "huaweicloud_networking_secgroup_rule" "secgroup_rule" {
   security_group_id = huaweicloud_networking_secgroup.mysecgroup.id
 }
 /*
-resource "huaweicloud_compute_instance" "winbasic" para windows {
+resource "huaweicloud_compute_instance" "winbasic" para windows { //can be used to create a windows instance
   name              = "ecs-sei-novo"
   image_id          = "8c26fd28-1a04-4761-8b87-349bde3a1af8"
   flavor_id         = "s6.medium.2"
@@ -38,7 +38,7 @@ resource "huaweicloud_compute_instance" "winbasic" para windows {
   }
 }
 */
-resource "huaweicloud_compute_instance" "basic" {
+resource "huaweicloud_compute_instance" "basic" { // creating an ubuntu instance
   name              = "ecs-SaoPaulo"
   image_id          = "3075b5b0-bc15-4998-97b6-7c3d5eb5d911"
   flavor_id         = "s6.large.2"
@@ -55,5 +55,29 @@ resource "huaweicloud_networking_secgroup" "secgroup" {
   description = "terraform security group acceptance test"
 }
 
+resource "huaweicloud_rds_instance" "instance" { //creating PostgreSQL instance
+  name              = "terraform_test_rds_instance"
+  flavor            = "rds.pg.n1.large.2"
+  vpc_id            = huaweicloud_vpc.vpc.id
+  subnet_id         = huaweicloud_vpc_subnet.subnet2.id
+  security_group_id = huaweicloud_networking_secgroup.secgroup.id
+  availability_zone = ["sa-brazil-1a"]
+
+  db {
+    type     = "PostgreSQL"
+    version  = "12"
+    password = "Huangwei!120521"
+  }
+
+  volume {
+    type = "CLOUDSSD"
+    size = 100
+  }
+
+  backup_strategy {
+    start_time = "08:00-09:00"
+    keep_days  = 1
+  }
+}
 
 
